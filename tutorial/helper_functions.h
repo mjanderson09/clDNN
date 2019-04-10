@@ -49,7 +49,7 @@ std::vector<T> get_simple_data(const memory& m)
     std::vector<T> data(m.get_layout().get_linear_size());
     for (size_t i = 0; i < data.size(); i++)
     {
-        data[i] = static_cast<T>(1.0f);
+        data[i] = static_cast<T>(i);
     }
 
     return std::move(data);
