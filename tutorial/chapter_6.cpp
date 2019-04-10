@@ -24,6 +24,7 @@
 #include <../api/CPP/convolution.hpp>
 #include <iostream>
 #include <chrono>
+#include <sys/time.h>
 
 #include "helper_functions.h"
 
@@ -41,9 +42,19 @@
 *
 */
 
+using namespace std;
 using namespace cldnn;
 
-void chapter_6(engine& engine)
+void benchmark_conv(network& network, const memory& input_memory)
+{
+    // Set/update network input
+    network.set_input_data("conv_input", input_memory);
+
+    // Start network execution
+    auto outputs = network.execute();
+}
+
+void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, int niter, int s, cldnn::format input_format, cldnn::format weights_format)
 {
     std::cout << std::endl << "-- Chapter 6 --" << std::endl;
 
@@ -56,28 +67,35 @@ void chapter_6(engine& engine)
     // We use this code as an helper to test our new convolution kernel
 
     // Create input memory for convolution layer
-    memory input_prim = memory::allocate(engine, { data_types::f32, format::bfyx,{ 1, 3, 227, 227 } });
-    memory weights    = memory::allocate(engine, { data_types::f32, format::bfyx,{ 1, 3, 3, 3 } });
-    memory biases     = memory::allocate(engine, { data_types::f32, format::bfyx,{ 1, 1, 1, 1 } });
+    memory input_prim = memory::allocate(engine, { data_types::f32, input_format, {spatial(H,W), batch(N), feature(C)} });
+    memory weights    = memory::allocate(engine, { data_types::f32, weights_format, {spatial(R,S), batch(K), feature(C)} } );
+    //memory input_prim = memory::allocate(engine, { data_types::f32, format::bfyx, {N,C,H,W} });
+    //memory weights    = memory::allocate(engine, { data_types::f32, format::bfyx, {K,C,R,S} } );
+    memory bias = memory::allocate(engine, { data_types::f32, format::bfyx, spatial(K)  });
+    tensor stride(1,1,s,s);
 
     set_values(input_prim, get_simple_data<float>(input_prim));
     set_values(weights,    get_simple_data<float>(weights));
-    set_values(biases,     get_simple_data<float>(biases));
+    set_values(bias,    get_simple_data<float>(bias));
 
     // Create a topology with a simple Convolution layer
     topology topology(
         input_layout("conv_input", input_prim.get_layout()),
         data("conv_weights", weights),
-        data("conv_biases", biases),
+        data("conv_bias", bias),
         convolution(
             "conv",
             "conv_input",
             { "conv_weights" },
-            { "conv_biases" })
+            { "conv_bias" },
+            stride
+            )
     );
+
 
     build_options build_opt;
     // Optimize_data flag can change weights and outputs layouts. Let take a look at 
+    build_opt.set_option(build_option::outputs(topology.get_primitive_ids()));
     // Set option to optimize data.
     build_opt.set_option(build_option::optimize_data(true));
 
@@ -87,25 +105,42 @@ void chapter_6(engine& engine)
     network.set_input_data("conv_input", input_prim);
     // Ready to go.
     auto outputs = network.execute();
+    auto output = outputs.at("conv").get_memory();
+    struct timeval start, end;
 
-    // Get primitives that were executed and their events needed for profiling
-    auto executed_primitives = network.get_executed_primitives();
-
-    // Now, we want to check what is the time of execution of each primitive:
-    std::vector<cldnn::instrumentation::profiling_info> profiling_table;
-    for (auto& p : executed_primitives)
+    gettimeofday(&start, NULL);
+    for(int iter = 0 ; iter < niter ; iter++)
     {
-        profiling_table.push_back({ p.first, p.second.get_profiling_info() });
+      benchmark_conv(network, input_prim);
+    }
+    output = outputs.at("conv").get_memory();
+    // Get direct access to output memory
+    cldnn::pointer<float> out_ptr(output);
+    gettimeofday(&end, NULL);
+
+    // Analyze result
+    double avg = 0.0;
+    int cnt = 0;
+    for(auto it = out_ptr.begin() ; it != out_ptr.end() ; it++)
+    {
+      avg += (double)(*it);
+      cnt++;
     }
 
     // We have table of profiling metrics.
-    for (auto& p : profiling_table)
-    {
-        std::cout << p.name << ":" << std::endl;
-        for (auto& q : p.intervals)
-        {
-            std::cout << "\t" << q.name << ": " << std::chrono::duration_cast<std::chrono::duration<double, std::chrono::milliseconds::period>>(q.value->value()).count()
-                << " milliseconds" << std::endl;
-        }
-    }
+    double runtime = ((end.tv_sec-start.tv_sec) + (end.tv_usec-start.tv_usec)*1e-6) / (double)niter;
+    std::cout << "PERFDUMP" << "," <<
+                 N << "," <<
+                 C << "," <<
+                 H << "," <<
+                 W << "," <<
+                 K << "," <<
+                 R << "," <<
+                 S << "," <<
+                 s << "," <<
+                 input_format << "," <<
+                 weights_format << "," <<
+                 niter << "," <<
+                 runtime <<  "," << 
+                 (avg / (double)cnt)  <<  std::endl;
 }
