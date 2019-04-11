@@ -54,7 +54,7 @@ void benchmark_conv(network& network, const memory& input_memory)
     auto outputs = network.execute();
 }
 
-void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, int niter, int s, cldnn::format input_format, cldnn::format weights_format)
+void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, int niter, int s, cldnn::format input_format, cldnn::format weights_format, int P, int Q)
 {
     std::cout << std::endl << "-- Chapter 6 --" << std::endl;
 
@@ -69,10 +69,9 @@ void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, 
     // Create input memory for convolution layer
     memory input_prim = memory::allocate(engine, { data_types::f32, input_format, {spatial(H,W), batch(N), feature(C)} });
     memory weights    = memory::allocate(engine, { data_types::f32, weights_format, {spatial(R,S), batch(K), feature(C)} } );
-    //memory input_prim = memory::allocate(engine, { data_types::f32, format::bfyx, {N,C,H,W} });
-    //memory weights    = memory::allocate(engine, { data_types::f32, format::bfyx, {K,C,R,S} } );
     memory bias = memory::allocate(engine, { data_types::f32, format::bfyx, spatial(K)  });
     tensor stride(1,1,s,s);
+    tensor output_size(N,K,Q,P);
 
     set_values(input_prim, get_simple_data<float>(input_prim));
     set_values(weights,    get_simple_data<float>(weights));
@@ -88,7 +87,12 @@ void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, 
             "conv_input",
             { "conv_weights" },
             { "conv_bias" },
-            stride
+            stride,
+            {0,0,0,0},
+            {1,1,1,1},
+            false,
+            0.0f,
+            output_size
             )
     );
 
