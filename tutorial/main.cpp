@@ -64,25 +64,25 @@ int main()
         chapter_5(eng, topology);
         for(int fmt = 0 ; fmt < NUM_FORMATS; fmt++)
         {
-          chapter_6(eng, 32, 64, 56, 56, 256, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 56, 56);
-          chapter_6(eng, 32, 64, 56, 56, 64, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 56, 56);
-          chapter_6(eng, 32, 64, 56, 56, 64, 3, 3, 100, 1, formats[fmt][0], formats[fmt][1], 56, 56);
-          chapter_6(eng, 32, 256, 56, 56, 64, 1, 1, 100,1 , formats[fmt][0], formats[fmt][1], 56, 56);
-          chapter_6(eng, 32, 256, 56, 56, 512, 1, 1, 100, 2, formats[fmt][0], formats[fmt][1], 28, 28);
-          chapter_6(eng, 32, 256, 56, 56, 128, 1, 1, 100, 2, formats[fmt][0], formats[fmt][1], 28, 28);
-          chapter_6(eng, 32, 128, 28, 28, 128, 3, 3, 100, 1, formats[fmt][0], formats[fmt][1], 28, 28);
-          chapter_6(eng, 32, 128, 28, 28, 512, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 28, 28);
-          chapter_6(eng, 32, 512, 28, 28, 128, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 28, 28);
-          chapter_6(eng, 32, 512, 28, 28, 1024, 1, 1, 100, 2, formats[fmt][0], formats[fmt][1], 14, 14);
-          chapter_6(eng, 32, 512, 28, 28, 256, 1, 1, 100, 2, formats[fmt][0], formats[fmt][1], 14, 14);
-          chapter_6(eng, 32, 256, 14, 14, 256, 3, 3, 100, 1, formats[fmt][0], formats[fmt][1], 14, 14); 
-          chapter_6(eng, 32, 256, 14, 14, 1024, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 14, 14);
-          chapter_6(eng, 32, 1024, 14, 14, 256, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 14, 14);
-          chapter_6(eng, 32, 1024, 14, 14, 2048, 1, 1, 100, 2, formats[fmt][0], formats[fmt][1], 7, 7);
-          chapter_6(eng, 32, 1024, 14, 14, 512, 1, 1, 100, 2, formats[fmt][0], formats[fmt][1], 7, 7);
-          chapter_6(eng, 32, 512, 7, 7, 512, 3, 3, 100, 1, formats[fmt][0], formats[fmt][1], 7, 7);
-          chapter_6(eng, 32, 512, 7, 7, 2048, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 7, 7);
-          chapter_6(eng, 32, 2048, 7, 7, 512, 1, 1, 100, 1, formats[fmt][0], formats[fmt][1], 7, 7);
+          chapter_6(eng, 32, 64, 56, 56, 256, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 56, 56);
+          chapter_6(eng, 32, 64, 56, 56, 64, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 56, 56);
+          chapter_6(eng, 32, 64, 56, 56, 64, 3, 3, 1000, 1, formats[fmt][0], formats[fmt][1], 56, 56);
+          chapter_6(eng, 32, 256, 56, 56, 64, 1, 1, 1000,1 , formats[fmt][0], formats[fmt][1], 56, 56);
+          chapter_6(eng, 32, 256, 56, 56, 512, 1, 1, 1000, 2, formats[fmt][0], formats[fmt][1], 28, 28);
+          chapter_6(eng, 32, 256, 56, 56, 128, 1, 1, 1000, 2, formats[fmt][0], formats[fmt][1], 28, 28);
+          chapter_6(eng, 32, 128, 28, 28, 128, 3, 3, 1000, 1, formats[fmt][0], formats[fmt][1], 28, 28);
+          chapter_6(eng, 32, 128, 28, 28, 512, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 28, 28);
+          chapter_6(eng, 32, 512, 28, 28, 128, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 28, 28);
+          chapter_6(eng, 32, 512, 28, 28, 1024, 1, 1, 1000, 2, formats[fmt][0], formats[fmt][1], 14, 14);
+          chapter_6(eng, 32, 512, 28, 28, 256, 1, 1, 1000, 2, formats[fmt][0], formats[fmt][1], 14, 14);
+          chapter_6(eng, 32, 256, 14, 14, 256, 3, 3, 1000, 1, formats[fmt][0], formats[fmt][1], 14, 14); 
+          chapter_6(eng, 32, 256, 14, 14, 1024, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 14, 14);
+          chapter_6(eng, 32, 1024, 14, 14, 256, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 14, 14);
+          chapter_6(eng, 32, 1024, 14, 14, 2048, 1, 1, 1000, 2, formats[fmt][0], formats[fmt][1], 7, 7);
+          chapter_6(eng, 32, 1024, 14, 14, 512, 1, 1, 1000, 2, formats[fmt][0], formats[fmt][1], 7, 7);
+          chapter_6(eng, 32, 512, 7, 7, 512, 3, 3, 1000, 1, formats[fmt][0], formats[fmt][1], 7, 7);
+          chapter_6(eng, 32, 512, 7, 7, 2048, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 7, 7);
+          chapter_6(eng, 32, 2048, 7, 7, 512, 1, 1, 1000, 1, formats[fmt][0], formats[fmt][1], 7, 7);
         }
         chapter_7(eng);
         chapter_8(eng);

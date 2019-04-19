@@ -24,7 +24,8 @@
 #include <../api/CPP/convolution.hpp>
 #include <iostream>
 #include <chrono>
-#include <sys/time.h>
+#include <tchar.h>
+#include <windows.h>
 
 #include "helper_functions.h"
 
@@ -42,7 +43,6 @@
 *
 */
 
-using namespace std;
 using namespace cldnn;
 
 void benchmark_conv(network& network, const memory& input_memory)
@@ -110,9 +110,12 @@ void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, 
     // Ready to go.
     auto outputs = network.execute();
     auto output = outputs.at("conv").get_memory();
-    struct timeval start, end;
+    __int64 start = 0;
+    __int64 end = 0;
+    __int64 freq = 0;
 
-    gettimeofday(&start, NULL);
+    QueryPerformanceCounter((LARGE_INTEGER *)&start);
+
     for(int iter = 0 ; iter < niter ; iter++)
     {
       benchmark_conv(network, input_prim);
@@ -120,7 +123,7 @@ void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, 
     output = outputs.at("conv").get_memory();
     // Get direct access to output memory
     cldnn::pointer<float> out_ptr(output);
-    gettimeofday(&end, NULL);
+    QueryPerformanceCounter((LARGE_INTEGER *)&end);
 
     // Analyze result
     double avg = 0.0;
@@ -132,7 +135,9 @@ void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, 
     }
 
     // We have table of profiling metrics.
-    double runtime = ((end.tv_sec-start.tv_sec) + (end.tv_usec-start.tv_usec)*1e-6) / (double)niter;
+    QueryPerformanceFrequency((LARGE_INTEGER *) &freq);
+    double runtime = ((end-start) * 1.0 / freq) / (double)niter;
+
     std::cout << "PERFDUMP" << "," <<
                  N << "," <<
                  C << "," <<
