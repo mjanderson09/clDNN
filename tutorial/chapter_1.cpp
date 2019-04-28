@@ -43,6 +43,7 @@ engine chapter_1()
 
     // Create an engine
     engine engine(profiling);
+
     // We have to choose data type (f32 or f16):
     data_types data_type = data_types::f32;
     // Format (order of dimensions in memory), bfyx is the most optimal and common:

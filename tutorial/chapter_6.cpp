@@ -52,6 +52,7 @@ void benchmark_conv(network& network, const memory& input_memory)
 
     // Start network execution
     auto outputs = network.execute();
+
 }
 
 void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, int niter, int s, cldnn::format input_format, cldnn::format weights_format, int P, int Q)
@@ -115,7 +116,6 @@ void chapter_6(engine& engine, int N, int C, int H, int W, int K, int R, int S, 
     __int64 freq = 0;
 
     QueryPerformanceCounter((LARGE_INTEGER *)&start);
-
     for(int iter = 0 ; iter < niter ; iter++)
     {
       benchmark_conv(network, input_prim);
